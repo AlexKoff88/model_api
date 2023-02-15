@@ -28,13 +28,20 @@ from setuptools import find_packages, setup
 SETUP_DIR = Path(__file__).resolve().parent
 
 with open(SETUP_DIR / "requirements.txt") as f:
-    required = f.read().splitlines()
+    INSTALL_REQUIRES = f.read().splitlines()
 
 with open(SETUP_DIR / "requirements_ovms.txt") as f:
-    ovms_required = f.read().splitlines()
+    OVMS_REQUIRES = f.read().splitlines()
 
 packages = find_packages(str(SETUP_DIR))
 package_dir = {"openvino": str(SETUP_DIR / "openvino")}
+
+TESTS_REQUIRE = ["pytest", "parameterized"]
+
+EXTRAS_REQUIRE = {
+    "ovms": OVMS_REQUIRES,
+    "tests": TESTS_REQUIRE,
+}
 
 setup(
     name="openvino_model_api",
@@ -50,6 +57,6 @@ setup(
     ],
     packages=packages,
     package_dir=package_dir,
-    install_requires=required,
-    extras_require={"ovms": ovms_required},
+    install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
 )
