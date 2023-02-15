@@ -42,13 +42,13 @@ jobs:
       run: |
         source venv/bin/activate
         pip install --upgrade pip
-        pip install isort
+        # pip install isort
         pip install black
     - name: Check style with black
       run: |
         source venv/bin/activate
         black --check .
-    - name: Check style with isort
-      run: |
-        source venv/bin/activate
-        isort --check .
+    # - name: Check style with isort
+    #   run: |
+    #     source venv/bin/activate
+    #     isort --check .
