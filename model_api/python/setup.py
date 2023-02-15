@@ -50,13 +50,6 @@ setup(
     ],
     packages=packages,
     package_dir=package_dir,
-    install_requires=[
-        "numpy>=1.16.6,<=1.23.1",
-        "opencv-python",
-        "scipy>=1.5.4,<1.9.0",
-        "openvino>=2022.3",
-        "openvino-dev>=2022.3",
-        "omz_tools @ git+https://github.com/AlexKoff88/open_model_zoo.git@ak/new_model_api#subdirectory=tools/model_tools"
-        ],
+    install_requires=required,
     extras_require={"ovms": ovms_required},
 )
