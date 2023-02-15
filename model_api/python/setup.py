@@ -34,16 +34,15 @@ with open(SETUP_DIR / "requirements_ovms.txt") as f:
     ovms_required = f.read().splitlines()
 
 packages = find_packages(str(SETUP_DIR))
-packages.remove("visualizers")
 package_dir = {"openvino": str(SETUP_DIR / "openvino")}
 
 setup(
-    name="openmodelzoo-modelapi",
-    version="0.0.0",
+    name="openvino_model_api",
+    version="0.1.0",
     author="Intel® Corporation",
     license="OSI Approved :: Apache Software License",
     url="https://github.com/openvinotoolkit/open_model_zoo/tree/develop/demos/common/python/openvino",
-    description="Model API: model wrappers and pipelines from Open Model Zoo",
+    description="Model API: model wrappers and pipelines for inference with OpenVINO",
     python_requires=">=3.7",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
