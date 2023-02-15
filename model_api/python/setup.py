@@ -34,7 +34,6 @@ with open(SETUP_DIR / "requirements_ovms.txt") as f:
     ovms_required = f.read().splitlines()
 
 packages = find_packages(str(SETUP_DIR))
-packages.remove("visualizers")
 package_dir = {"openvino": str(SETUP_DIR / "openvino")}
 
 setup(
