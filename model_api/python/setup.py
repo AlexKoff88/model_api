@@ -42,6 +42,8 @@ TESTS_REQUIRE = [
     "google-api-python-client",
     "onnx",
     "tensorflow",
+    "torch",
+    "torchvision",
 ]
 
 EXTRAS_REQUIRE = {
@@ -65,4 +67,5 @@ setup(
     package_dir=package_dir,
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
+    dependency_links=["https://download.pytorch.org/whl/cpu"],
 )
