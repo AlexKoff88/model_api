@@ -16,11 +16,18 @@
 """
 
 import sys
-from pathlib import Path
 
 import cv2
 from openvino.model_api.models import Classification, DetectionModel, SegmentationModel
 from PIL import Image
+
+
+def from_local_xml(image):
+    ssd_local = DetectionModel.create_model(
+        "/home/alex/.cache/omz/public/ssd_mobilenet_v1_fpn_coco/FP16/ssd_mobilenet_v1_fpn_coco.xml"
+    )
+    detections = ssd_local(image)
+    print(f"Detection results local: {detections}")
 
 
 def main():
@@ -44,12 +51,7 @@ def main():
     detections = ssd(image)
     print(f"Detection results: {detections}")
 
-    # Create Image Segmentation model
-    ssd_local = DetectionModel.create_model(
-        "/home/alex/.cache/omz/public/ssd_mobilenet_v1_fpn_coco/FP16/ssd_mobilenet_v1_fpn_coco.xml"
-    )
-    detections = ssd_local(image)
-    print(f"Detection results local: {detections}")
+    # from_local_xml(image)
 
     # Create Image Segmentation model
     hrnet = SegmentationModel.create_model("hrnet-v2-c1-segmentation")
