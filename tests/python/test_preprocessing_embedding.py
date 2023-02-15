@@ -15,7 +15,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "tools/model_tools/src"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "demos/common/python"))
 
-from openvino.model_zoo.model_api.models import (
+from openvino.model_api.models import (
     Detection,
     Model,
     classification_models,

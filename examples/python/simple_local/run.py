@@ -19,15 +19,15 @@ import sys
 from pathlib import Path
 
 import cv2
-from openvino.model_zoo.model_api.models import (
+from openvino.model_api.models import (
     Classification,
     DetectionModel,
     SegmentationModel,
 )
 from PIL import Image
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools/model_tools/src"))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "demos/common/python"))
+#sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools/model_tools/src"))
+#sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "demos/common/python"))
 
 
 def main():
