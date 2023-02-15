@@ -23,7 +23,7 @@ from .utils import Detection, clip_detections, nms
 
 
 class CTPN(DetectionModel):
-    __model__ = 'CTPN'
+    __model__ = "CTPN"
 
     def __init__(self, model_adapter, configuration=None, preload=False):
         super().__init__(model_adapter, configuration, False)
@@ -37,34 +37,51 @@ class CTPN(DetectionModel):
         self.post_nms_top_n = 500
         self.text_proposal_connector = TextProposalConnector()
 
-        self.anchors = np.array([
-            [0,   2,  15,  13],
-            [0,   0,  15,  15],
-            [0,  -4,  15,  19],
-            [0,  -9,  15,  24],
-            [0,  -16, 15,  31],
-            [0,  -26, 15,  41],
-            [0,  -41, 15,  56],
-            [0,  -62, 15,  77],
-            [0,  -91, 15, 106],
-            [0, -134, 15, 149]
-        ])
+        self.anchors = np.array(
+            [
+                [0, 2, 15, 13],
+                [0, 0, 15, 15],
+                [0, -4, 15, 19],
+                [0, -9, 15, 24],
+                [0, -16, 15, 31],
+                [0, -26, 15, 41],
+                [0, -41, 15, 56],
+                [0, -62, 15, 77],
+                [0, -91, 15, 106],
+                [0, -134, 15, 149],
+            ]
+        )
 
-        self.h1, self.w1 = self.ctpn_keep_aspect_ratio(1200, 600, self.input_size[1], self.input_size[0])
+        self.h1, self.w1 = self.ctpn_keep_aspect_ratio(
+            1200, 600, self.input_size[1], self.input_size[0]
+        )
         self.h2, self.w2 = self.ctpn_keep_aspect_ratio(600, 600, self.w1, self.h1)
         default_input_shape = self.inputs[self.image_blob_name].shape
-        new_shape = [self.n, self.c, self.h2, self.w2] if self.nchw_layout else [self.n, self.h2, self.w2, self.c]
+        new_shape = (
+            [self.n, self.c, self.h2, self.w2]
+            if self.nchw_layout
+            else [self.n, self.h2, self.w2, self.c]
+        )
         input_shape = {self.image_blob_name: (new_shape)}
-        self.logger.debug('\tReshape model from {} to {}'.format(default_input_shape, input_shape[self.image_blob_name]))
+        self.logger.debug(
+            "\tReshape model from {} to {}".format(
+                default_input_shape, input_shape[self.image_blob_name]
+            )
+        )
         self.reshape(input_shape)
         if preload:
             self.load()
 
     def _get_outputs(self):
-        (boxes_name, boxes_data_repr), (scores_name, scores_data_repr) = self.outputs.items()
+        (boxes_name, boxes_data_repr), (
+            scores_name,
+            scores_data_repr,
+        ) = self.outputs.items()
 
         if len(boxes_data_repr.shape) != 4 or len(scores_data_repr.shape) != 4:
-            self.raise_error("Unexpected output blob shape. Only 4D output blobs are supported")
+            self.raise_error(
+                "Unexpected output blob shape. Only 4D output blobs are supported"
+            )
 
         if self.nchw_layout:
             scores_channels = scores_data_repr.shape[1]
@@ -82,25 +99,33 @@ class CTPN(DetectionModel):
     @classmethod
     def parameters(cls):
         parameters = super().parameters()
-        parameters.update({
-            'iou_threshold': NumericalValue(default_value=0.5, description="Threshold for NMS filtering"),
-            'input_size': ListValue()
-        })
-        parameters['confidence_threshold'].update_default_value(0.9)
-        parameters['labels'].update_default_value(['Text'])
+        parameters.update(
+            {
+                "iou_threshold": NumericalValue(
+                    default_value=0.5, description="Threshold for NMS filtering"
+                ),
+                "input_size": ListValue(),
+            }
+        )
+        parameters["confidence_threshold"].update_default_value(0.9)
+        parameters["labels"].update_default_value(["Text"])
         return parameters
 
     def preprocess(self, inputs):
-        meta = {'original_shape': inputs.shape}
+        meta = {"original_shape": inputs.shape}
         scales = (self.w1 / inputs.shape[1], self.h1 / inputs.shape[0])
 
         if scales[0] < 1 and scales[1] < 1:
-            meta['scales'] = [scales]
+            meta["scales"] = [scales]
             inputs = cv2.resize(inputs, (self.w1, self.h1))
-        if (self.h2 == 600 and self.w2 == 600 or
-           (self.h1 != self.h2 or self.w1 != self.w2)):
-            meta.setdefault('scales', []).append((self.w2 / inputs.shape[1],
-                                                  self.h2 / inputs.shape[0]))
+        if (
+            self.h2 == 600
+            and self.w2 == 600
+            or (self.h1 != self.h2 or self.w1 != self.w2)
+        ):
+            meta.setdefault("scales", []).append(
+                (self.w2 / inputs.shape[1], self.h2 / inputs.shape[0])
+            )
             inputs = cv2.resize(inputs, (self.w2, self.h2))
 
         inputs = self._change_layout(inputs)
@@ -108,22 +133,32 @@ class CTPN(DetectionModel):
         return dict_inputs, meta
 
     def postprocess(self, outputs, meta):
-        first_scales = meta['scales'].pop()
-        boxes = outputs[self.bboxes_blob_name][0].transpose((1, 2, 0)) \
-                if self.nchw_layout else outputs[self.bboxes_blob_name][0]
-        scores = outputs[self.scores_blob_name][0].transpose((1, 2, 0)) \
-                 if self.nchw_layout else outputs[self.scores_blob_name][0]
+        first_scales = meta["scales"].pop()
+        boxes = (
+            outputs[self.bboxes_blob_name][0].transpose((1, 2, 0))
+            if self.nchw_layout
+            else outputs[self.bboxes_blob_name][0]
+        )
+        scores = (
+            outputs[self.scores_blob_name][0].transpose((1, 2, 0))
+            if self.nchw_layout
+            else outputs[self.scores_blob_name][0]
+        )
 
-        textsegs, scores = self.get_proposals(scores, boxes, meta['original_shape'])
+        textsegs, scores = self.get_proposals(scores, boxes, meta["original_shape"])
         textsegs[:, 0::2] /= first_scales[0]
         textsegs[:, 1::2] /= first_scales[1]
-        boxes = self.get_detections(textsegs, scores[:, np.newaxis], meta['original_shape'])
-        if meta['scales']:
-            second_scales = meta['scales'].pop()
+        boxes = self.get_detections(
+            textsegs, scores[:, np.newaxis], meta["original_shape"]
+        )
+        if meta["scales"]:
+            second_scales = meta["scales"].pop()
             boxes[:, 0:8:2] /= second_scales[0]
             boxes[:, 1:8:2] /= second_scales[1]
-        detections = [Detection(box[0], box[1], box[2], box[5], box[8], 0) for box in boxes]
-        return clip_detections(detections, meta['original_shape'])
+        detections = [
+            Detection(box[0], box[1], box[2], box[5], box[8], 0) for box in boxes
+        ]
+        return clip_detections(detections, meta["original_shape"])
 
     @staticmethod
     def ctpn_keep_aspect_ratio(dst_width, dst_height, image_width, image_height):
@@ -139,7 +174,9 @@ class CTPN(DetectionModel):
 
         return int(new_h), int(new_w)
 
-    def get_proposals(self, rpn_cls_prob_reshape, bbox_deltas, image_size, _feat_stride=16):
+    def get_proposals(
+        self, rpn_cls_prob_reshape, bbox_deltas, image_size, _feat_stride=16
+    ):
         """
         Parameters
         rpn_cls_prob_reshape: (H , W , Ax2), probabilities for predicted regions
@@ -163,15 +200,21 @@ class CTPN(DetectionModel):
         _num_anchors = _anchors.shape[0]
         height, width = rpn_cls_prob_reshape.shape[:2]
         scores = np.reshape(
-            np.reshape(rpn_cls_prob_reshape, [height, width, _num_anchors, 2])[:, :, :, 1],
-            [height, width, _num_anchors]
+            np.reshape(rpn_cls_prob_reshape, [height, width, _num_anchors, 2])[
+                :, :, :, 1
+            ],
+            [height, width, _num_anchors],
         )
         shift_x = np.arange(0, width) * _feat_stride
         shift_y = np.arange(0, height) * _feat_stride
         shift_x, shift_y = np.meshgrid(shift_x, shift_y)
-        shifts = np.vstack((shift_x.ravel(), shift_y.ravel(), shift_x.ravel(), shift_y.ravel())).transpose()
+        shifts = np.vstack(
+            (shift_x.ravel(), shift_y.ravel(), shift_x.ravel(), shift_y.ravel())
+        ).transpose()
         _num_shifts = shifts.shape[0]
-        anchors = _anchors.reshape((1, _num_anchors, 4)) + shifts.reshape((1, _num_shifts, 4)).transpose((1, 0, 2))
+        anchors = _anchors.reshape((1, _num_anchors, 4)) + shifts.reshape(
+            (1, _num_shifts, 4)
+        ).transpose((1, 0, 2))
         anchors = anchors.reshape((_num_shifts * _num_anchors, 4))
         # Transpose and reshape predicted bbox transformations to get them
         # into the same order as the anchors:
@@ -188,19 +231,34 @@ class CTPN(DetectionModel):
         proposals = self.bbox_transform_inv(anchors, bbox_deltas)
 
         # clip predicted boxes to image
-        proposals[:, :4].clip(min=0, max=(image_size[1] - 1, image_size[0] - 1, image_size[1] - 1, image_size[0] - 1),
-                              out=proposals[:, :4])
+        proposals[:, :4].clip(
+            min=0,
+            max=(
+                image_size[1] - 1,
+                image_size[0] - 1,
+                image_size[1] - 1,
+                image_size[0] - 1,
+            ),
+            out=proposals[:, :4],
+        )
         # sort all (proposal, score) pairs by score from highest to lowest
         order = scores.ravel().argsort()[::-1]
         if self.pre_nms_top_n > 0:
-            order = order[:self.pre_nms_top_n]
+            order = order[: self.pre_nms_top_n]
         proposals, scores = proposals[order, :], scores[order]
 
         # apply nms
-        keep = nms(proposals[:, 0], proposals[:, 1], proposals[:, 2], proposals[:, 3], scores.reshape(-1),
-                   self.iou_threshold, include_boundaries=True)
+        keep = nms(
+            proposals[:, 0],
+            proposals[:, 1],
+            proposals[:, 2],
+            proposals[:, 3],
+            scores.reshape(-1),
+            self.iou_threshold,
+            include_boundaries=True,
+        )
         if self.post_nms_top_n > 0:
-            keep = keep[:self.post_nms_top_n]
+            keep = keep[: self.post_nms_top_n]
         proposals, scores = proposals[keep, :], scores[keep]
         return proposals, scores
 
@@ -211,19 +269,29 @@ class CTPN(DetectionModel):
         sorted_indices = np.argsort(scores.ravel())[::-1]
         text_proposals, scores = text_proposals[sorted_indices], scores[sorted_indices]
 
-        text_recs = self.text_proposal_connector.get_text_lines(text_proposals, scores, size)
+        text_recs = self.text_proposal_connector.get_text_lines(
+            text_proposals, scores, size
+        )
 
-        heights = (abs(text_recs[:, 5] - text_recs[:, 1]) + abs(text_recs[:, 7] - text_recs[:, 3])) / 2.0 + 1
-        widths = (abs(text_recs[:, 2] - text_recs[:, 0]) + abs(text_recs[:, 6] - text_recs[:, 4])) / 2.0 + 1
+        heights = (
+            abs(text_recs[:, 5] - text_recs[:, 1])
+            + abs(text_recs[:, 7] - text_recs[:, 3])
+        ) / 2.0 + 1
+        widths = (
+            abs(text_recs[:, 2] - text_recs[:, 0])
+            + abs(text_recs[:, 6] - text_recs[:, 4])
+        ) / 2.0 + 1
         scores = text_recs[:, 8]
-        keep_inds = np.where((widths / heights > self.min_ratio) & (scores > self.confidence_threshold) &
-                             (widths > self.min_width))[0]
+        keep_inds = np.where(
+            (widths / heights > self.min_ratio)
+            & (scores > self.confidence_threshold)
+            & (widths > self.min_width)
+        )[0]
 
         return text_recs[keep_inds]
 
     @staticmethod
     def bbox_transform_inv(boxes, deltas):
-
         boxes = boxes.astype(deltas.dtype, copy=False)
 
         widths = boxes[:, 2] - boxes[:, 0] + 1.0
@@ -267,8 +335,9 @@ class Graph:
 
 class TextProposalGraphBuilder:
     """
-        Build Text proposals into a graph.
+    Build Text proposals into a graph.
     """
+
     def get_successions(self, index):
         box = self.text_proposals[index]
         results = []
@@ -366,8 +435,12 @@ class TextProposalConnector:
 
             offset = (text_line_boxes[0, 2] - text_line_boxes[0, 0]) * 0.5
 
-            lt_y, rt_y = fit_y(text_line_boxes[:, 0], text_line_boxes[:, 1], x0 + offset, x1 - offset)
-            lb_y, rb_y = fit_y(text_line_boxes[:, 0], text_line_boxes[:, 3], x0 + offset, x1 - offset)
+            lt_y, rt_y = fit_y(
+                text_line_boxes[:, 0], text_line_boxes[:, 1], x0 + offset, x1 - offset
+            )
+            lb_y, rb_y = fit_y(
+                text_line_boxes[:, 0], text_line_boxes[:, 3], x0 + offset, x1 - offset
+            )
             score = scores[list(tp_indices)].sum() / float(len(tp_indices))
 
             text_lines[index, 0] = x0
@@ -376,14 +449,32 @@ class TextProposalConnector:
             text_lines[index, 3] = max(lb_y, rb_y)
             text_lines[index, 4] = score
 
-        text_lines[:, :4].clip(min=0, max=(image_size[1] - 1, image_size[0] - 1, image_size[1] - 1, image_size[0] - 1),
-                               out=text_lines[:, :4])
+        text_lines[:, :4].clip(
+            min=0,
+            max=(
+                image_size[1] - 1,
+                image_size[0] - 1,
+                image_size[1] - 1,
+                image_size[0] - 1,
+            ),
+            out=text_lines[:, :4],
+        )
 
         text_recs = np.zeros((len(text_lines), 9), float)
         for index, line in enumerate(text_lines):
             xmin, ymin, xmax, ymax = line[0], line[1], line[2], line[3]
-            text_recs[index, 0], text_recs[index, 1], text_recs[index, 2], text_recs[index, 3] = xmin, ymin, xmax, ymin
-            text_recs[index, 4], text_recs[index, 5], text_recs[index, 6], text_recs[index, 7] = xmax, ymax, xmin, ymax
+            (
+                text_recs[index, 0],
+                text_recs[index, 1],
+                text_recs[index, 2],
+                text_recs[index, 3],
+            ) = (xmin, ymin, xmax, ymin)
+            (
+                text_recs[index, 4],
+                text_recs[index, 5],
+                text_recs[index, 6],
+                text_recs[index, 7],
+            ) = (xmax, ymax, xmin, ymax)
             text_recs[index, 8] = line[4]
 
         return text_recs

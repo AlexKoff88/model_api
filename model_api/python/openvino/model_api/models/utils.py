@@ -32,13 +32,13 @@ class Detection:
 
     def get_coords(self):
         return self.xmin, self.ymin, self.xmax, self.ymax
-    
+
     def __to_str(self):
-        return f'({self.xmin}, {self.ymin}, {self.xmax}, {self.ymax}, {self.score}, {self.id}, {self.str_label})'
-    
+        return f"({self.xmin}, {self.ymin}, {self.xmax}, {self.ymax}, {self.score}, {self.id}, {self.str_label})"
+
     def __str__(self):
         return self.__to_str()
-    
+
     def __repr__(self):
         return self.__to_str()
 
@@ -69,8 +69,9 @@ class OutputTransform:
     def compute_resolution(self, input_size):
         self.input_size = input_size
         size = self.input_size[::-1]
-        self.scale_factor = min(self.output_resolution[0] / size[0],
-                                self.output_resolution[1] / size[1])
+        self.scale_factor = min(
+            self.output_resolution[0] / size[0], self.output_resolution[1] / size[1]
+        )
         return self.scale(size)
 
     def resize(self, image):
@@ -90,11 +91,21 @@ class OutputTransform:
 
 
 class InputTransform:
-    def __init__(self, reverse_input_channels=False, mean_values=None, scale_values=None):
+    def __init__(
+        self, reverse_input_channels=False, mean_values=None, scale_values=None
+    ):
         self.reverse_input_channels = reverse_input_channels
         self.is_trivial = not (reverse_input_channels or mean_values or scale_values)
-        self.means = np.array(mean_values, dtype=np.float32) if mean_values else np.array([0., 0., 0.])
-        self.std_scales = np.array(scale_values, dtype=np.float32) if scale_values else np.array([1., 1., 1.])
+        self.means = (
+            np.array(mean_values, dtype=np.float32)
+            if mean_values
+            else np.array([0.0, 0.0, 0.0])
+        )
+        self.std_scales = (
+            np.array(scale_values, dtype=np.float32)
+            if scale_values
+            else np.array([1.0, 1.0, 1.0])
+        )
 
     def __call__(self, inputs):
         if self.is_trivial:
@@ -105,7 +116,7 @@ class InputTransform:
 
 
 def load_labels(label_file):
-    with open(label_file, 'r') as f:
+    with open(label_file, "r") as f:
         labels_map = [x.strip() for x in f]
     return labels_map
 
@@ -116,19 +127,27 @@ def resize_image(image, size, keep_aspect_ratio=False, interpolation=cv2.INTER_L
     else:
         h, w = image.shape[:2]
         scale = min(size[1] / h, size[0] / w)
-        resized_frame = cv2.resize(image, None, fx=scale, fy=scale, interpolation=interpolation)
+        resized_frame = cv2.resize(
+            image, None, fx=scale, fy=scale, interpolation=interpolation
+        )
     return resized_frame
 
 
 def resize_image_with_aspect(image, size, interpolation=cv2.INTER_LINEAR):
-    return resize_image(image, size, keep_aspect_ratio=True, interpolation=interpolation)
+    return resize_image(
+        image, size, keep_aspect_ratio=True, interpolation=interpolation
+    )
 
 
 def pad_image(image, size):
     h, w = image.shape[:2]
     if h != size[1] or w != size[0]:
-        image = np.pad(image, ((0, size[1] - h), (0, size[0] - w), (0, 0)),
-                               mode='constant', constant_values=0)
+        image = np.pad(
+            image,
+            ((0, size[1] - h), (0, size[0] - w), (0, 0)),
+            mode="constant",
+            constant_values=0,
+        )
     return image
 
 
@@ -141,45 +160,49 @@ def resize_image_letterbox(image, size, interpolation=cv2.INTER_LINEAR):
     image = cv2.resize(image, (nw, nh), interpolation=interpolation)
     dx = (w - nw) // 2
     dy = (h - nh) // 2
-    resized_image = np.pad(image, ((dy, dy + (h - nh) % 2), (dx, dx + (w - nw) % 2), (0, 0)),
-                           mode='constant', constant_values=0)
+    resized_image = np.pad(
+        image,
+        ((dy, dy + (h - nh) % 2), (dx, dx + (w - nw) % 2), (0, 0)),
+        mode="constant",
+        constant_values=0,
+    )
     return resized_image
 
 
 def crop_resize(image, size):
-    desired_aspect_ratio = size[1] / size[0] # width / height
+    desired_aspect_ratio = size[1] / size[0]  # width / height
     if desired_aspect_ratio == 1:
-        if (image.shape[0] > image.shape[1]):
+        if image.shape[0] > image.shape[1]:
             offset = (image.shape[0] - image.shape[1]) // 2
-            cropped_frame = image[offset:image.shape[1] + offset]
+            cropped_frame = image[offset : image.shape[1] + offset]
         else:
             offset = (image.shape[1] - image.shape[0]) // 2
-            cropped_frame = image[:, offset:image.shape[0] + offset]
+            cropped_frame = image[:, offset : image.shape[0] + offset]
     elif desired_aspect_ratio < 1:
         new_width = math.floor(image.shape[0] * desired_aspect_ratio)
         offset = (image.shape[1] - new_width) // 2
-        cropped_frame = image[:, offset:new_width + offset]
+        cropped_frame = image[:, offset : new_width + offset]
     elif desired_aspect_ratio > 1:
         new_height = math.floor(image.shape[1] / desired_aspect_ratio)
         offset = (image.shape[0] - new_height) // 2
-        cropped_frame = image[offset:new_height + offset]
+        cropped_frame = image[offset : new_height + offset]
 
     return cv2.resize(cropped_frame, size)
 
 
 RESIZE_TYPES = {
-    'crop' : crop_resize,
-    'standard': resize_image,
-    'fit_to_window': resize_image_with_aspect,
-    'fit_to_window_letterbox': resize_image_letterbox,
+    "crop": crop_resize,
+    "standard": resize_image,
+    "fit_to_window": resize_image_with_aspect,
+    "fit_to_window_letterbox": resize_image_letterbox,
 }
 
 
 INTERPOLATION_TYPES = {
-    'LINEAR': cv2.INTER_LINEAR,
-    'CUBIC': cv2.INTER_CUBIC,
-    'NEAREST': cv2.INTER_NEAREST,
-    'AREA': cv2.INTER_AREA,
+    "LINEAR": cv2.INTER_LINEAR,
+    "CUBIC": cv2.INTER_CUBIC,
+    "NEAREST": cv2.INTER_NEAREST,
+    "AREA": cv2.INTER_AREA,
 }
 
 
@@ -205,8 +228,13 @@ def nms(x1, y1, x2, y2, scores, thresh, include_boundaries=False, keep_top_k=Non
         h = np.maximum(0.0, yy2 - yy1 + b)
         intersection = w * h
 
-        union = (areas[i] + areas[order[1:]] - intersection)
-        overlap = np.divide(intersection, union, out=np.zeros_like(intersection, dtype=float), where=union != 0)
+        union = areas[i] + areas[order[1:]] - intersection
+        overlap = np.divide(
+            intersection,
+            union,
+            out=np.zeros_like(intersection, dtype=float),
+            where=union != 0,
+        )
 
         order = order[np.where(overlap <= thresh)[0] + 1]
 

@@ -15,11 +15,12 @@
 """
 
 
-from .background_matting import (ImageMattingWithBackground,
-                                 PortraitBackgroundMatting,
-                                 VideoBackgroundMatting)
-from .bert import (BertEmbedding, BertNamedEntityRecognition,
-                   BertQuestionAnswering)
+from .background_matting import (
+    ImageMattingWithBackground,
+    PortraitBackgroundMatting,
+    VideoBackgroundMatting,
+)
+from .bert import BertEmbedding, BertNamedEntityRecognition, BertQuestionAnswering
 from .centernet import CenterNet
 from .classification import Classification
 from .ctpn import CTPN
@@ -38,8 +39,13 @@ from .retinaface import RetinaFace, RetinaFacePyTorch
 from .segmentation import SalientObjectDetectionModel, SegmentationModel
 from .ssd import SSD
 from .ultra_lightweight_face_detection import UltraLightweightFaceDetection
-from .utils import (RESIZE_TYPES, Detection, DetectionWithLandmarks,
-                    InputTransform, OutputTransform)
+from .utils import (
+    RESIZE_TYPES,
+    Detection,
+    DetectionWithLandmarks,
+    InputTransform,
+    OutputTransform,
+)
 from .yolo import YOLO, YOLOF, YOLOX, YoloV3ONNX, YoloV4
 
 classification_models = [
@@ -50,7 +56,7 @@ classification_models = [
 ]
 
 detection_models = [
-    #"face-detection-retail-0044", # resize_type is wrong or missed in model.yml
+    # "face-detection-retail-0044", # resize_type is wrong or missed in model.yml
     "yolo-v4-tf",
     "ssd_mobilenet_v1_fpn_coco",
     "ssdlite_mobilenet_v2",
@@ -99,9 +105,8 @@ __all__ = [
     "YoloV4",
     "YOLOF",
     "YOLOX",
-    "Detection", 
+    "Detection",
     "DetectionWithLandmarks",
-    "classification_models"
-    "detection_models",
+    "classification_models" "detection_models",
     "segmentation_models",
 ]

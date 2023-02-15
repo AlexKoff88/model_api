@@ -35,7 +35,12 @@ class AsyncPipeline:
     def callback(self, request, callback_args):
         try:
             id, meta, preprocessing_meta, start_time = callback_args
-            self.completed_results[id] = (self.model.model_adapter.copy_raw_result(request), meta, preprocessing_meta, start_time)
+            self.completed_results[id] = (
+                self.model.model_adapter.copy_raw_result(request),
+                meta,
+                preprocessing_meta,
+                start_time,
+            )
         except Exception as e:
             self.callback_exceptions.append(e)
 
@@ -60,7 +65,10 @@ class AsyncPipeline:
             self.inference_metrics.update(infer_start_time)
 
             postprocessing_start_time = perf_counter()
-            result = self.model.postprocess(raw_result, preprocess_meta), {**meta, **preprocess_meta}
+            result = self.model.postprocess(raw_result, preprocess_meta), {
+                **meta,
+                **preprocess_meta,
+            }
             self.postprocess_metrics.update(postprocessing_start_time)
             return result
         return None

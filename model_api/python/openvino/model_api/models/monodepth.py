@@ -20,14 +20,18 @@ from .segmentation import SegmentationModel
 
 
 class MonoDepthModel(SegmentationModel):
-    __model__ = 'MonoDepth'
+    __model__ = "MonoDepth"
 
     def postprocess(self, outputs, meta):
         result = outputs[self.output_blob_name].squeeze()
-        input_image_height = meta['original_shape'][0]
-        input_image_width = meta['original_shape'][1]
+        input_image_height = meta["original_shape"][0]
+        input_image_width = meta["original_shape"][1]
 
-        result = cv2.resize(result, (input_image_width, input_image_height), interpolation=cv2.INTER_CUBIC)
+        result = cv2.resize(
+            result,
+            (input_image_width, input_image_height),
+            interpolation=cv2.INTER_CUBIC,
+        )
 
         disp_min = result.min()
         disp_max = result.max()

@@ -23,7 +23,7 @@ from .utils import load_labels
 
 
 class SegmentationModel(ImageModel):
-    __model__ = 'Segmentation'
+    __model__ = "Segmentation"
 
     def __init__(self, model_adapter, configuration=None, preload=False):
         super().__init__(model_adapter, configuration, preload)
@@ -42,41 +42,61 @@ class SegmentationModel(ImageModel):
         elif len(layer_shape) == 4:
             self.out_channels = layer_shape[1]
         else:
-            self.raise_error("Unexpected output layer shape {}. Only 4D and 3D output layers are supported".format(layer_shape))
+            self.raise_error(
+                "Unexpected output layer shape {}. Only 4D and 3D output layers are supported".format(
+                    layer_shape
+                )
+            )
 
         return layer_name
 
     @classmethod
     def parameters(cls):
         parameters = super().parameters()
-        parameters.update({
-            'labels': ListValue(description="List of class labels"),
-            'path_to_labels': StringValue(description="Path to file with labels. Overrides the labels, if they sets via 'labels' parameter")
-        })
+        parameters.update(
+            {
+                "labels": ListValue(description="List of class labels"),
+                "path_to_labels": StringValue(
+                    description="Path to file with labels. Overrides the labels, if they sets via 'labels' parameter"
+                ),
+            }
+        )
 
         return parameters
 
     def postprocess(self, outputs, meta):
         predictions = outputs[self.output_blob_name].squeeze()
-        input_image_height = meta['original_shape'][0]
-        input_image_width = meta['original_shape'][1]
+        input_image_height = meta["original_shape"][0]
+        input_image_width = meta["original_shape"][1]
 
-        if self.out_channels < 2: # assume the output is already ArgMax'ed
+        if self.out_channels < 2:  # assume the output is already ArgMax'ed
             result = predictions.astype(np.uint8)
         else:
             result = np.argmax(predictions, axis=0).astype(np.uint8)
 
-        result = cv2.resize(result, (input_image_width, input_image_height), 0, 0, interpolation=cv2.INTER_NEAREST)
+        result = cv2.resize(
+            result,
+            (input_image_width, input_image_height),
+            0,
+            0,
+            interpolation=cv2.INTER_NEAREST,
+        )
         return result
 
 
 class SalientObjectDetectionModel(SegmentationModel):
-    __model__ = 'Salient_Object_Detection'
+    __model__ = "Salient_Object_Detection"
 
     def postprocess(self, outputs, meta):
-        input_image_height = meta['original_shape'][0]
-        input_image_width = meta['original_shape'][1]
+        input_image_height = meta["original_shape"][0]
+        input_image_width = meta["original_shape"][1]
         result = outputs[self.output_blob_name].squeeze()
-        result = 1/(1 + np.exp(-result))
-        result = cv2.resize(result, (input_image_width, input_image_height), 0, 0, interpolation=cv2.INTER_NEAREST)
+        result = 1 / (1 + np.exp(-result))
+        result = cv2.resize(
+            result,
+            (input_image_width, input_image_height),
+            0,
+            0,
+            interpolation=cv2.INTER_NEAREST,
+        )
         return result

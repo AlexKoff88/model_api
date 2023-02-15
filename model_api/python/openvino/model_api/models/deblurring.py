@@ -20,7 +20,7 @@ from .image_model import ImageModel
 
 
 class Deblurring(ImageModel):
-    __model__ = 'Deblurring'
+    __model__ = "Deblurring"
 
     def __init__(self, model_adapter, configuration=None, preload=False):
         super().__init__(model_adapter, configuration, preload)
@@ -38,43 +38,63 @@ class Deblurring(ImageModel):
         new_height = math.ceil(h / self.block_size) * self.block_size
         new_width = math.ceil(w / self.block_size) * self.block_size
         self.h, self.w = new_height, new_width
-        self.logger.debug("\tReshape model from {} to {}".format(
-            [self.n, self.c, h, w], [self.n, self.c, self.h, self.w]))
+        self.logger.debug(
+            "\tReshape model from {} to {}".format(
+                [self.n, self.c, h, w], [self.n, self.c, self.h, self.w]
+            )
+        )
         super().reshape({self.image_blob_name: [self.n, self.c, self.h, self.w]})
 
     def _get_outputs(self):
         output_blob_name = next(iter(self.outputs))
         output_size = self.outputs[output_blob_name].shape
         if len(output_size) != 4:
-            self.raise_error("Unexpected output blob shape {}. Only 4D output blob is supported".format(output_size))
+            self.raise_error(
+                "Unexpected output blob shape {}. Only 4D output blob is supported".format(
+                    output_size
+                )
+            )
 
         return output_blob_name
 
     def preprocess(self, inputs):
         image = inputs
 
-        if self.h - self.block_size < image.shape[0] <= self.h and self.w - self.block_size < image.shape[1] <= self.w:
-            pad_params = {'mode': 'constant',
-                          'constant_values': 0,
-                          'pad_width': ((0, self.h - image.shape[0]), (0, self.w - image.shape[1]), (0, 0))
-                          }
+        if (
+            self.h - self.block_size < image.shape[0] <= self.h
+            and self.w - self.block_size < image.shape[1] <= self.w
+        ):
+            pad_params = {
+                "mode": "constant",
+                "constant_values": 0,
+                "pad_width": (
+                    (0, self.h - image.shape[0]),
+                    (0, self.w - image.shape[1]),
+                    (0, 0),
+                ),
+            }
             resized_image = np.pad(image, **pad_params)
         else:
-            self.logger.warning("\tChosen model size doesn't match image size. The image is resized")
+            self.logger.warning(
+                "\tChosen model size doesn't match image size. The image is resized"
+            )
             resized_image = cv2.resize(image, (self.w, self.h))
 
         resized_image = resized_image.transpose((2, 0, 1))
         resized_image = np.expand_dims(resized_image, 0)
         dict_inputs = {self.image_blob_name: resized_image}
-        meta = {'original_shape': image.shape[1::-1]}
+        meta = {"original_shape": image.shape[1::-1]}
         return dict_inputs, meta
 
     def postprocess(self, outputs, meta):
-        dsize = meta['original_shape']
+        dsize = meta["original_shape"]
         prediction = outputs[self.output_blob_name].squeeze()
         prediction = prediction.transpose((1, 2, 0))
-        if self.h - self.block_size < dsize[1] <= self.h and self.w - self.block_size < dsize[0] <= self.w:
-            prediction = prediction[:dsize[1], :dsize[0], :]
+        if (
+            self.h - self.block_size < dsize[1] <= self.h
+            and self.w - self.block_size < dsize[0] <= self.w
+        ):
+            prediction = prediction[: dsize[1], : dsize[0], :]
         else:
             prediction = cv2.resize(prediction, dsize)
         prediction *= 255

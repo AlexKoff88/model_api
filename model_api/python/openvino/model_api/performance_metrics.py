@@ -20,8 +20,12 @@ from time import perf_counter
 import cv2
 
 
-def put_highlighted_text(frame, message, position, font_face, font_scale, color, thickness):
-    cv2.putText(frame, message, position, font_face, font_scale, (255, 255, 255), thickness + 1) # white border
+def put_highlighted_text(
+    frame, message, position, font_face, font_scale, color, thickness
+):
+    cv2.putText(
+        frame, message, position, font_face, font_scale, (255, 255, 255), thickness + 1
+    )  # white border
     cv2.putText(frame, message, position, font_face, font_scale, color, thickness)
 
 
@@ -65,38 +69,77 @@ class PerformanceMetrics:
         if frame is not None:
             self.paint_metrics(frame)
 
-    def paint_metrics(self, frame, position=(15, 30), font_scale=0.75, color=(200, 10, 10), thickness=2):
+    def paint_metrics(
+        self,
+        frame,
+        position=(15, 30),
+        font_scale=0.75,
+        color=(200, 10, 10),
+        thickness=2,
+    ):
         # Draw performance stats over frame
         current_latency, current_fps = self.get_last()
         if current_latency is not None:
-            put_highlighted_text(frame, "Latency: {:.1f} ms".format(current_latency * 1e3),
-                                 position, cv2.FONT_HERSHEY_COMPLEX, font_scale, color, thickness)
+            put_highlighted_text(
+                frame,
+                "Latency: {:.1f} ms".format(current_latency * 1e3),
+                position,
+                cv2.FONT_HERSHEY_COMPLEX,
+                font_scale,
+                color,
+                thickness,
+            )
         if current_fps is not None:
-            put_highlighted_text(frame, "FPS: {:.1f}".format(current_fps),
-                                 (position[0], position[1]+30), cv2.FONT_HERSHEY_COMPLEX, font_scale, color, thickness)
+            put_highlighted_text(
+                frame,
+                "FPS: {:.1f}".format(current_fps),
+                (position[0], position[1] + 30),
+                cv2.FONT_HERSHEY_COMPLEX,
+                font_scale,
+                color,
+                thickness,
+            )
 
     def get_last(self):
-        return (self.last_moving_statistic.latency / self.last_moving_statistic.frame_count
-                if self.last_moving_statistic.frame_count != 0
-                else None,
-                self.last_moving_statistic.frame_count / self.last_moving_statistic.period
-                if self.last_moving_statistic.period != 0.0
-                else None)
+        return (
+            self.last_moving_statistic.latency / self.last_moving_statistic.frame_count
+            if self.last_moving_statistic.frame_count != 0
+            else None,
+            self.last_moving_statistic.frame_count / self.last_moving_statistic.period
+            if self.last_moving_statistic.period != 0.0
+            else None,
+        )
 
     def get_total(self):
-        frame_count = self.total_statistic.frame_count + self.current_moving_statistic.frame_count
-        return (((self.total_statistic.latency + self.current_moving_statistic.latency) / frame_count)
-                if frame_count != 0
-                else None,
-                (frame_count / (self.total_statistic.period + self.current_moving_statistic.period))
-                if frame_count != 0
-                else None)
+        frame_count = (
+            self.total_statistic.frame_count + self.current_moving_statistic.frame_count
+        )
+        return (
+            (
+                (self.total_statistic.latency + self.current_moving_statistic.latency)
+                / frame_count
+            )
+            if frame_count != 0
+            else None,
+            (
+                frame_count
+                / (self.total_statistic.period + self.current_moving_statistic.period)
+            )
+            if frame_count != 0
+            else None,
+        )
 
     def get_latency(self):
         return self.get_total()[0] * 1e3
 
     def log_total(self):
         total_latency, total_fps = self.get_total()
-        log.info('Metrics report:')
-        log.info("\tLatency: {:.1f} ms".format(total_latency * 1e3) if total_latency is not None else "\tLatency: N/A")
-        log.info("\tFPS: {:.1f}".format(total_fps) if total_fps is not None else "\tFPS: N/A")
+        log.info("Metrics report:")
+        log.info(
+            "\tLatency: {:.1f} ms".format(total_latency * 1e3)
+            if total_latency is not None
+            else "\tLatency: N/A"
+        )
+        log.info(
+            "\tFPS: {:.1f}".format(total_fps) if total_fps is not None else "\tFPS: N/A"
+        )
