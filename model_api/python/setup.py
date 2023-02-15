@@ -36,7 +36,13 @@ with open(SETUP_DIR / "requirements_ovms.txt") as f:
 packages = find_packages(str(SETUP_DIR))
 package_dir = {"openvino": str(SETUP_DIR / "openvino")}
 
-TESTS_REQUIRE = ["pytest", "parameterized"]
+TESTS_REQUIRE = [
+    "pytest",
+    "parameterized",
+    "google-api-python-client",
+    "onnx",
+    "tensorflow",
+]
 
 EXTRAS_REQUIRE = {
     "ovms": OVMS_REQUIRES,
