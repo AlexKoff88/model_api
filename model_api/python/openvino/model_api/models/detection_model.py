@@ -13,9 +13,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 """
-from .types import ListValue, NumericalValue, StringValue
 from .image_model import ImageModel
-from .utils import load_labels, clip_detections
+from .types import ListValue, NumericalValue, StringValue
+from .utils import clip_detections, load_labels
 
 
 class DetectionModel(ImageModel):

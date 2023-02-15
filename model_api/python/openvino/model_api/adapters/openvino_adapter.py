@@ -19,16 +19,19 @@ from pathlib import Path
 from typing import Dict, Set, Tuple
 
 try:
-    from openvino.runtime import AsyncInferQueue, Core, PartialShape, layout_helpers, get_version, \
-                                Dimension, Type
-    from openvino.preprocess import PrePostProcessor, ResizeAlgorithm, ColorFormat
     import openvino.runtime as ov
+    from openvino.preprocess import (ColorFormat, PrePostProcessor,
+                                     ResizeAlgorithm)
+    from openvino.runtime import (AsyncInferQueue, Core, Dimension,
+                                  PartialShape, Type, get_version,
+                                  layout_helpers)
     openvino_absent = False
 except ImportError:
     openvino_absent = True
 
-from .model_adapter import ModelAdapter, Metadata
-from .utils import Layout, resize_image_letterbox, crop_resize, resize_image, resize_image_with_aspect
+from .model_adapter import Metadata, ModelAdapter
+from .utils import (Layout, crop_resize, resize_image, resize_image_letterbox,
+                    resize_image_with_aspect)
 
 
 def create_core():

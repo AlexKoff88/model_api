@@ -22,10 +22,12 @@ try:
 except ImportError:
     ovmsclient_absent = True
 
-import re
-import numpy as np
 import logging as log
-from .model_adapter import ModelAdapter, Metadata
+import re
+
+import numpy as np
+
+from .model_adapter import Metadata, ModelAdapter
 from .utils import Layout
 
 

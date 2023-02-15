@@ -18,8 +18,8 @@ import cv2
 import numpy as np
 
 from .image_model import ImageModel
-from .types import NumericalValue, ListValue, StringValue
-from .utils import nms, load_labels
+from .types import ListValue, NumericalValue, StringValue
+from .utils import load_labels, nms
 
 
 class MaskRCNNModel(ImageModel):

@@ -15,12 +15,12 @@
 """
 
 import re
-
-import numpy as np
 from itertools import product as product
 
+import numpy as np
+
 from .detection_model import DetectionModel
-from .utils import DetectionWithLandmarks, Detection, nms, clip_detections
+from .utils import Detection, DetectionWithLandmarks, clip_detections, nms
 
 
 class RetinaFace(DetectionModel):

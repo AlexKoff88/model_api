@@ -15,14 +15,17 @@
 """
 
 
-from .bert import BertEmbedding, BertNamedEntityRecognition, BertQuestionAnswering
-from .background_matting import ImageMattingWithBackground, VideoBackgroundMatting, PortraitBackgroundMatting
+from .background_matting import (ImageMattingWithBackground,
+                                 PortraitBackgroundMatting,
+                                 VideoBackgroundMatting)
+from .bert import (BertEmbedding, BertNamedEntityRecognition,
+                   BertQuestionAnswering)
 from .centernet import CenterNet
 from .classification import Classification
+from .ctpn import CTPN
 from .deblurring import Deblurring
 from .detection_model import DetectionModel
 from .detr import DETR
-from .ctpn import CTPN
 from .faceboxes import FaceBoxes
 from .hpe_associative_embedding import HpeAssociativeEmbedding
 from .image_model import ImageModel
@@ -32,12 +35,12 @@ from .monodepth import MonoDepthModel
 from .nanodet import NanoDet, NanoDetPlus
 from .open_pose import OpenPose
 from .retinaface import RetinaFace, RetinaFacePyTorch
-from .segmentation import SegmentationModel, SalientObjectDetectionModel
+from .segmentation import SalientObjectDetectionModel, SegmentationModel
 from .ssd import SSD
 from .ultra_lightweight_face_detection import UltraLightweightFaceDetection
-from .utils import DetectionWithLandmarks, InputTransform, OutputTransform, RESIZE_TYPES
-from .yolo import YOLO, YoloV3ONNX, YoloV4, YOLOF, YOLOX
-from .utils import Detection, DetectionWithLandmarks
+from .utils import (RESIZE_TYPES, Detection, DetectionWithLandmarks,
+                    InputTransform, OutputTransform)
+from .yolo import YOLO, YOLOF, YOLOX, YoloV3ONNX, YoloV4
 
 classification_models = [
     "resnet-18-pytorch",

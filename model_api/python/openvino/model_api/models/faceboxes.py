@@ -15,10 +15,11 @@
 """
 import itertools
 import math
+
 import numpy as np
 
-from .types import NumericalValue
 from .detection_model import DetectionModel
+from .types import NumericalValue
 from .utils import Detection, nms
 
 

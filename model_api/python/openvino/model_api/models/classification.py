@@ -16,10 +16,9 @@
 
 import numpy as np
 
-from .types import NumericalValue, ListValue, StringValue
-from .utils import softmax
-
 from .image_model import ImageModel
+from .types import ListValue, NumericalValue, StringValue
+from .utils import softmax
 
 
 class Classification(ImageModel):

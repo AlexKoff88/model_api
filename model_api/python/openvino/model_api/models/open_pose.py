@@ -16,10 +16,12 @@
 
 import cv2
 import numpy as np
+
 try:
     from numpy.core.umath import clip
 except ImportError:
     from numpy import clip
+
 import openvino.runtime.opset8 as opset8
 
 from .image_model import ImageModel

@@ -12,11 +12,13 @@
 """
 
 from collections import namedtuple
+
 import numpy as np
 
 from .detection_model import DetectionModel
 from .types import ListValue, NumericalValue
-from .utils import Detection, clip_detections, nms, resize_image, INTERPOLATION_TYPES
+from .utils import (INTERPOLATION_TYPES, Detection, clip_detections, nms,
+                    resize_image)
 
 DetectionBox = namedtuple('DetectionBox', ["x", "y", "w", "h"])
 

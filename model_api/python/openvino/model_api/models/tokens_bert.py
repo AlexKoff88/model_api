@@ -14,8 +14,8 @@
  limitations under the License.
 """
 
-import unicodedata
 import string
+import unicodedata
 
 
 # A class to store context as text, its tokens and embedding vector

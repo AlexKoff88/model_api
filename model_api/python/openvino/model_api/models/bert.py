@@ -14,7 +14,7 @@
 import numpy as np
 
 from .model import Model
-from .types import DictValue, NumericalValue, StringValue, BooleanValue
+from .types import BooleanValue, DictValue, NumericalValue, StringValue
 
 
 class Bert(Model):

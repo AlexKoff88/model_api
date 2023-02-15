@@ -17,8 +17,6 @@
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-
-
 from .image_model import ImageModel
 from .types import NumericalValue, StringValue
 from .utils import resize_image

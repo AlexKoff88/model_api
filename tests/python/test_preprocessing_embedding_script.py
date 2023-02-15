@@ -1,23 +1,21 @@
-import tempfile
-import requests
-import os
-from copy import deepcopy
 import math
-from pathlib import Path
+import os
 import sys
+import tempfile
+import time
+from copy import deepcopy
+from pathlib import Path
 
+import cv2
 import numpy as np
 import pytest
-import cv2
-import time
+import requests
 
 # Temporary WA
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / 'tools/model_tools/src'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / 'demos/common/python'))
 
-from openvino.model_zoo.model_api.models import Model
-from openvino.model_zoo.model_api.models import Detection
-
+from openvino.model_zoo.model_api.models import Detection, Model
 
 IMAFE_FILE = tempfile.NamedTemporaryFile(suffix=".jpg").name
 
@@ -96,9 +94,9 @@ def test_image_models(model_name):
     
     assert compare_model_outputs(ref_output, to_compare)
 
-from openvino.model_zoo.model_api.models import classification_models
-from openvino.model_zoo.model_api.models import detection_models
-from openvino.model_zoo.model_api.models import segmentation_models
+from openvino.model_zoo.model_api.models import (classification_models,
+                                                 detection_models,
+                                                 segmentation_models)
 
 #test_image_models("yolo-v4-tf")
 #test_image_models("resnet-18-pytorch")

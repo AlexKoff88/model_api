@@ -14,15 +14,15 @@
  limitations under the License.
 """
 
-from typing import Optional
 from functools import partial
+from typing import Optional
 
 import numpy as np
-from openvino.runtime import layout_helpers
+import openvino.runtime as ov
+from openvino.runtime import Output, layout_helpers
 from openvino.runtime import opset10 as opset
 from openvino.runtime.utils.decorators import custom_preprocess_function
-from openvino.runtime import Output
-import openvino.runtime as ov
+
 
 class Layout:
     def __init__(self, layout = '') -> None:

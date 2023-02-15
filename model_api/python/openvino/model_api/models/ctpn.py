@@ -19,7 +19,7 @@ import numpy as np
 
 from .detection_model import DetectionModel
 from .types import ListValue, NumericalValue
-from .utils import Detection, nms, clip_detections
+from .utils import Detection, clip_detections, nms
 
 
 class CTPN(DetectionModel):

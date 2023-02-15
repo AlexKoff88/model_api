@@ -18,8 +18,9 @@ import logging as log
 import re
 
 from openvino.model_zoo.model_api.adapters.model_adapter import ModelAdapter
+from openvino.model_zoo.model_api.adapters.openvino_adapter import (
+    OpenvinoAdapter, create_core, get_user_config)
 from openvino.model_zoo.model_api.adapters.ovms_adapter import OVMSAdapter
-from openvino.model_zoo.model_api.adapters.openvino_adapter import OpenvinoAdapter, create_core, get_user_config
 
 
 class WrapperError(RuntimeError):

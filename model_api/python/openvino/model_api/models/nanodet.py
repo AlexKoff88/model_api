@@ -14,11 +14,12 @@
  limitations under the License.
 """
 import math
+
 import numpy as np
 
-from .types import NumericalValue
 from .detection_model import DetectionModel
-from .utils import Detection, softmax, nms, clip_detections
+from .types import NumericalValue
+from .utils import Detection, clip_detections, nms, softmax
 
 
 class NanoDet(DetectionModel):

@@ -11,8 +11,9 @@
  limitations under the License.
 """
 
-import cv2
 import math
+
+import cv2
 import numpy as np
 
 from .image_model import ImageModel

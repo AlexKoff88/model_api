@@ -15,7 +15,7 @@
 """
 
 
-from .openvino_adapter import create_core, get_user_config, OpenvinoAdapter
+from .openvino_adapter import OpenvinoAdapter, create_core, get_user_config
 from .ovms_adapter import OVMSAdapter
 from .utils import Layout
 

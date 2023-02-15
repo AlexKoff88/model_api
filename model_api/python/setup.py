@@ -22,8 +22,8 @@ model API. The installation of wheel is described in
 """
 
 from pathlib import Path
-from setuptools import setup, find_packages
 
+from setuptools import find_packages, setup
 
 SETUP_DIR = Path(__file__).resolve().parent
 
