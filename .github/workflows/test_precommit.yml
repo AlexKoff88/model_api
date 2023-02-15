@@ -33,4 +33,4 @@ jobs:
         pip install model_api/python/[tests]
     - name: Test with Pytest
       run: |
-        pytest tests/openvino/ --ignore test_modeling_basic
+        pytest tests/python/
