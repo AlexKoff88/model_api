@@ -74,7 +74,5 @@ jobs:
           
       - name: cppcheck
         uses: deep5050/cppcheck-action@main
-        run: |
-          cppcheck .
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
