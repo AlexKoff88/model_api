@@ -60,6 +60,7 @@ cv::Mat renderDetectionData(cv::Mat& outputImg, DetectionResult& result, const D
     return outputImg;
 }
 
+
 int main(int argc, char* argv[]) {
     try {
         std::cout << ov::get_openvino_version() << std::endl;
