@@ -48,13 +48,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(CMakeParseArguments)
 
-# add_demo(NAME <target name>
+# add_example(NAME <target name>
 #     SOURCES <source files>
 #     [HEADERS <header files>]
 #     [INCLUDE_DIRECTORIES <include dir>]
 #     [OPENCV_VERSION_REQUIRED <X.Y.Z>]
 #     [DEPENDENCIES <dependencies>])
-macro(add_demo)
+macro(add_example)
     set(oneValueArgs NAME OPENCV_VERSION_REQUIRED)
     set(multiValueArgs SOURCES HEADERS DEPENDENCIES INCLUDE_DIRECTORIES)
     cmake_parse_arguments(OMZ_DEMO "${options}" "${oneValueArgs}"
@@ -96,4 +96,4 @@ find_package(OpenVINO REQUIRED COMPONENTS Runtime)
 
 add_subdirectory(../../../model_api/cpp ${Samples_BINARY_DIR}/model_api/cpp)
 
-add_demo(NAME simple_local SOURCES main.cpp DEPENDENCIES model_api)
+add_example(NAME simple_local SOURCES main.cpp DEPENDENCIES model_api)
