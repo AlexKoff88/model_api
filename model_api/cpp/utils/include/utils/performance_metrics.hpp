@@ -88,5 +88,3 @@ private:
     TimePoint lastUpdateTime;
     bool firstFrameProcessed;
 };
-
-void logLatencyPerStage(double readLat, double preprocLat, double inferLat, double postprocLat, double renderLat);

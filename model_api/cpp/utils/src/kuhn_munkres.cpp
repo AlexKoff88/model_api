@@ -144,9 +144,9 @@ void KuhnMunkres::Run() {
                         if (row >= 0) {
                             count++;
                             points_[count] = cv::Point(points_[count - 1].x, row);
-                            int col = FindInRow(points_[count].y, kPrime);
+                            int idx = FindInRow(points_[count].y, kPrime);
                             count++;
-                            points_[count] = cv::Point(col, points_[count - 1].y);
+                            points_[count] = cv::Point(idx, points_[count - 1].y);
                         } else {
                             break;
                         }

@@ -60,12 +60,12 @@ std::vector<Pose> matchByTag(std::vector<std::vector<Peak>>& allPeaks,
                              size_t maxNumPeople,
                              size_t numJoints,
                              float tagThreshold) {
-    size_t jointOrder[]{0, 1, 2, 3, 4, 5, 6, 11, 12, 7, 8, 9, 10, 13, 14, 15, 16};
     std::vector<Pose> allPoses;
-    for (size_t jointId : jointOrder) {
+    for (size_t jointId : {0, 1, 2, 3, 4, 5, 6, 11, 12, 7, 8, 9, 10, 13, 14, 15, 16}) {
         std::vector<Peak>& jointPeaks = allPeaks[jointId];
         std::vector<float> tags;
-        for (auto& peak : jointPeaks) {
+        tags.reserve(jointPeaks.size());
+        for (const Peak& peak : jointPeaks) {
             tags.push_back(peak.tag);
         }
         if (allPoses.empty()) {
