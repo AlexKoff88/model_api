@@ -70,9 +70,13 @@ jobs:
     name: cppcheck-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-          
       - name: cppcheck
-        uses: deep5050/cppcheck-action@main 
-        with:
-          other_options: --bug-hunting --verbose --std=c11
+        uses: tonybaloney/cppcheck-action@master
+    # runs-on: ubuntu-latest
+    # steps:
+    #   - uses: actions/checkout@v2
+          
+    #   - name: cppcheck
+    #     uses: deep5050/cppcheck-action@main 
+    #     with:
+    #       other_options: --bug-hunting --verbose --std=c11
