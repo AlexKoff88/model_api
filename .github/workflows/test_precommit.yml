@@ -73,6 +73,8 @@ jobs:
       - uses: actions/checkout@v2
           
       - name: cppcheck
-        uses: deep5050/cppcheck-action@main
+        uses: chmorgan/cppcheck-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
+          # missingInclude: cppcheck can't find stl, openvino, opencv
+          other_options: --suppress=missingInclude -Imodel_api/cpp/models/include -Imodel_api/cpp/utils/include -Imodel_api/cpp/pipelines/include --check-config

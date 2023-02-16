@@ -77,7 +77,7 @@ std::unique_ptr<ResultBase> ModelBase::infer(const InputData& inputData)
     {
         auto core = ov::Core();
         auto model = prepareModel(core);
-        this->compiledModel = compiledModel = core.compile_model(model, "AUTO");
+        this->compiledModel = core.compile_model(model, "AUTO");
         this->inferRequest = this->compiledModel.create_infer_request();
         this->isCompiled = true;
     }

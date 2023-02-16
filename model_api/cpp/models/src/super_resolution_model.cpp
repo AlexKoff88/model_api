@@ -69,8 +69,8 @@ void SuperResolutionModel::prepareInputsOutputs(std::shared_ptr<ov::Model>& mode
 
     // A model like single-image-super-resolution-???? may take bicubic interpolation of the input image as the
     // second input
-    std::string bicInputTensorName;
     if (inputs.size() == 2) {
+        std::string bicInputTensorName;
         bicInputTensorName = (++inputs.begin())->get_any_name();
         inputsNames.push_back(bicInputTensorName);
         ov::Shape bicShape = (++inputs.begin())->get_shape();

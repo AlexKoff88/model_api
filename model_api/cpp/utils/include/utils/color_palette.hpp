@@ -14,30 +14,10 @@
 // limitations under the License.
 */
 
-#include <stddef.h>
-
-#include <algorithm>
-#include <chrono>
-#include <cmath>
-#include <cstdint>
-#include <exception>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <limits>
-#include <memory>
-#include <random>
-#include <stdexcept>
-#include <string>
-#include <typeinfo>
-#include <utility>
 #include <vector>
 
-#include <gflags/gflags.h>
-#include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <openvino/openvino.hpp>
 
 class DefaultColorPalette {
     private:

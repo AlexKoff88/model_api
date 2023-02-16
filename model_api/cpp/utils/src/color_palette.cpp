@@ -15,7 +15,7 @@
 */
 
 #include "utils/color_palette.hpp"
-
+#include <random>
 
 double DefaultColorPalette::getRandom(double a, double b) {
     static std::default_random_engine e;
