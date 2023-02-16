@@ -74,11 +74,7 @@ jobs:
           
       - name: cppcheck
         uses: deep5050/cppcheck-action@main
+        run: |
+          cppcheck .
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
-
-      - name: publish report    
-        uses: mikeal/publish-to-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME: 'main'
