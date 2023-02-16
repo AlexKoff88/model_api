@@ -70,6 +70,8 @@ jobs:
     name: cppcheck-test
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      
       - name: cppcheck
         uses: tonybaloney/cppcheck-action@master
     # runs-on: ubuntu-latest
