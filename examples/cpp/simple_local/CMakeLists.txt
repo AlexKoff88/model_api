@@ -97,3 +97,4 @@ find_package(OpenVINO REQUIRED COMPONENTS Runtime)
 add_subdirectory(../../../model_api/cpp ${Samples_BINARY_DIR}/model_api/cpp)
 
 add_example(NAME simple_local SOURCES main.cpp DEPENDENCIES model_api)
+#
