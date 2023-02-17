@@ -198,8 +198,8 @@ std::vector<std::pair<float, float>> filterReg(const ov::Tensor& regressionTenso
     const float* regPtr = regressionTensor.data<float>();
     std::vector<std::pair<float, float>> reg;
 
-    for (auto s : scores) {
-        reg.push_back({regPtr[s.first % chSize], regPtr[chSize + s.first % chSize]});
+    for (const auto& s : scores) {
+        reg.emplace_back(regPtr[s.first % chSize], regPtr[chSize + s.first % chSize]);
     }
 
     return reg;
@@ -211,8 +211,8 @@ std::vector<std::pair<float, float>> filterWH(const ov::Tensor& whTensor,
     const float* whPtr = whTensor.data<float>();
     std::vector<std::pair<float, float>> wh;
 
-    for (auto s : scores) {
-        wh.push_back({whPtr[s.first % chSize], whPtr[chSize + s.first % chSize]});
+    for (const auto& s : scores) {
+        wh.emplace_back(whPtr[s.first % chSize], whPtr[chSize + s.first % chSize]);
     }
 
     return wh;

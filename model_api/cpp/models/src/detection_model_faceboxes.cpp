@@ -110,13 +110,8 @@ void calculateAnchors(std::vector<Anchor>& anchors,
 
     std::vector<float> dense_cx, dense_cy;
 
-    for (auto x : vx) {
-        dense_cx.push_back(x * step);
-    }
-
-    for (auto y : vy) {
-        dense_cy.push_back(y * step);
-    }
+    std::transform(vx.begin(), vx.end(), std::back_inserter(dense_cx), [step](float x){return x * step;});
+    std::transform(vy.begin(), vy.end(), std::back_inserter(dense_cy), [step](float y){return y * step;});
 
     for (auto cy : dense_cy) {
         for (auto cx : dense_cx) {
@@ -161,7 +156,6 @@ void ModelFaceBoxes::priorBoxes(const std::vector<std::pair<size_t, size_t>>& fe
     anchors.reserve(maxProposalsCount);
 
     for (size_t k = 0; k < featureMaps.size(); ++k) {
-        std::vector<float> a;
         for (size_t i = 0; i < featureMaps[k].first; ++i) {
             for (size_t j = 0; j < featureMaps[k].second; ++j) {
                 if (k == 0) {
