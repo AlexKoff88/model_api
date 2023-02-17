@@ -39,8 +39,8 @@ def main():
         raise RuntimeError("Failed to read the image")
 
     # Create Image Classification model using mode name and download from Open Model Zoo
-    mobilenetv2 = Classification.create_model("efficientnet-b0-pytorch")
-    classifications = mobilenetv2(image)
+    efficientnetb0 = Classification.create_model("efficientnet-b0-pytorch")
+    classifications = efficientnetb0(image)
     print(f"Classification results: {classifications}")
 
     # Create Object Detection model using mode name and download from Open Model Zoo
